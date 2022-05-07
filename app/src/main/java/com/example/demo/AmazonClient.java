@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -28,7 +29,7 @@ public class AmazonClient {
 
     private String endpoint = "http://localhost:9324";
     private String queueUrl = "http://localhost:9324/000000000000/fifo-queue.fifo";
-    private String messageGroupId = "group1";
+    private String fixedMessageGroupId = "group1";
 
     @PostConstruct
     private void initializeAmazon() {
@@ -41,10 +42,11 @@ public class AmazonClient {
     }
 
     public void sendMessage(String message) {
+        String randomText = UUID.randomUUID().toString();
         SendMessageRequest send_msg_request = new SendMessageRequest()
                 .withQueueUrl(this.queueUrl)
-                .withMessageBody(message)
-                .withMessageGroupId(this.messageGroupId);
+                .withMessageBody(message + " " + randomText)
+                .withMessageGroupId(fixedMessageGroupId);
         this.sqsClient.sendMessage(send_msg_request);
 
     }
